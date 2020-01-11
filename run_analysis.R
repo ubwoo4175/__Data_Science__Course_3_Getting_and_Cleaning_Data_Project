@@ -53,7 +53,6 @@ names(X_new) <- c(as.character(features[mean_std_vars,]$V2), 'activity')
 # --------------------------------------------------------------------------------------
 # Step 5. Make new tidy dataset with the average of each variable for each activity and each subject
 # --------------------------------------------------------------------------------------
-
 subject_train <- read.table('./DATA/train/subject_train.txt')
 subject_test <- read.table('./DATA/test/subject_test.txt')
 subject <- rbind(subject_train, subject_test)
@@ -68,3 +67,6 @@ by_subject <- X_new %>%
 	group_by(subject) %>%
 	summarize_at(vars(-group_cols(), -activity), mean)
 
+by_activity_subject <- X_new %>%
+	group_by(activity, subject) %>%
+	summarize_at(vars(-group_cols()), mean)
