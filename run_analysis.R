@@ -2,21 +2,21 @@ if(!file.exists('./DATA')) {dir.create('./DATA')}
 fileURL <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
 download.file(fileURL, destfile = './DATA/downloaded.zip')
 
-# column이 561개임. 각각의 변수명 알려주는 파일
+# 561 column, tells each variable name
 features <- read.table('./DATA/features.txt')
 
-# observation 7352개인데 각각에서 측정/계산된 561개의 variable에 대한 수치
+# 7352 observations, values for each 561 variables
 X_train <- read.table('./DATA/train/X_train.txt')
-# observation 7352개인데 각각 어떤 activity인지 (1~6)
+# 7352 observations, tells wich activity it is (1~6)
 y_train <- read.table('./DATA/train/y_train.txt')
 
 
-# observation 7352개인데 각각에서 측정/계산된 561개의 variable에 대한 수치
+# 7352 observations, values for each 561 variables
 X_test <- read.table('./DATA/test/X_test.txt')
-# observation 7352개인데 각각 어떤 activity인지 (1~6)
+# 7352 observations, tells wich activity it is (1~6)
 y_test <- read.table('./DATA/test/y_test.txt')
 
-# activity 1~6의 실제 영어 이름 ex. WALKING, WALKING_UPSTAIRS
+# activity 1~6 -> actual name 름 ex. WALKING, WALKING_UPSTAIRS
 activity_labels <- read.table('./DATA/activity_labels.txt')
 
 
@@ -32,11 +32,11 @@ y <- rbind(y_train, y_test)
 # Step 2. Extract only variables with 'mean()' or 'std()'
 # -------------------------------------------------------
 
-# 관심있는 variable들의 위치 (numeric vector)
+# locations of variables we are interested in (numeric vector)
 mean_std_vars <- grep('-mean\\(\\)|-std\\(\\)', features$V2)
 
 library(dplyr)
-X_new <- select(X, mean_std_vars) # 우리가 관심있는 variable 66개만 봄
+X_new <- select(X, mean_std_vars) # choose the 66 variables 
 
 # --------------------------------------------------------------------------
 # Step 3. Add variable 'activity' to name the activities of each observation
@@ -70,3 +70,4 @@ by_subject <- X_new %>%
 by_activity_subject <- X_new %>%
 	group_by(activity, subject) %>%
 	summarize_at(vars(-group_cols()), mean)
+write.table(by_activity_subject, "TidyData.txt", row.name=FALSE)
